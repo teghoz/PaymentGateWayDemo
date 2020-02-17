@@ -16,6 +16,7 @@ namespace PaymentGatewayDbContext
 
         public DbSet<Merchant> tblMerchant { get; set; }
         public DbSet<Transactions> tblTransactions { get; set; }
+        public DbSet<CardDetails> tblCardDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

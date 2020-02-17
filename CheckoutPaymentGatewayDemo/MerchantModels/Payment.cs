@@ -13,7 +13,5 @@ namespace MerchantModels
         public decimal Amount { get; set; }
         [ForeignKey("OrderId")]
         public virtual Orders Orders { get; set; }
-        [ForeignKey("CustomerCardDetailsId")]
-        public virtual CustomerCardDetails CustomerCardDetails { get; set; }
     }
 }

@@ -2,16 +2,17 @@
 using SharedResource;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MerchantModels
+namespace PaymentGateWayModels
 {
-    public class CustomerCardDetails : BaseModel
+    public class CardDetails : BaseModel
     {
-        public int CustomerId { get; set; }
+        public int MerchantId { get; set; }
         public string cvv { get; set; }
         public string CreditCardNumber { get; set; }
         public string Expiry { get; set; }
         public string CardType { get; set; }
-        [ForeignKey("CustomerId")]
-        public virtual Customer Customer { get; set; }
+        public string Token { get; set; }
+        [ForeignKey("MerchantId")]
+        public virtual Merchant Merchant { get; set; }
     }
 }
