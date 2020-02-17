@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SharedResource
+namespace PaymentGateWayModels.ViewModels
 {
-    static class Utilities
+    public class PaymentResult
     {
-
     }
 }
