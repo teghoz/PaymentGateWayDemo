@@ -20,3 +20,4 @@ CheckoutPaymentGatewayDemo/SharedResource/bin/
 CheckoutPaymentGatewayDemo/MerchantModels/bin/
 CheckoutPaymentGatewayDemo/MerchantDbContext/bin/
 CheckoutPaymentGatewayDemo/MerchantRepository/bin/
+CheckoutPaymentGatewayDemo/PaymentGatewayTest/obj/

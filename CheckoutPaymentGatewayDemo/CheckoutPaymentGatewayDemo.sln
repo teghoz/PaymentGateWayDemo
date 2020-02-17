@@ -17,19 +17,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGatewayDbContext", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantDbContext", "MerchantDbContext\MerchantDbContext.csproj", "{5042B5F9-28FA-4F8A-95E6-61586211268C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGatewayModels", "PaymentGatewayModels\PaymentGatewayModels.csproj", "{7684838C-E988-4D85-A922-F11630B60CC5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGatewayModels", "PaymentGatewayModels\PaymentGatewayModels.csproj", "{7684838C-E988-4D85-A922-F11630B60CC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantModels", "MerchantModels\MerchantModels.csproj", "{2D15237B-A5CD-4220-86B7-42481F0ECF7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantModels", "MerchantModels\MerchantModels.csproj", "{2D15237B-A5CD-4220-86B7-42481F0ECF7B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Repositories", "Repositories", "{DA8F1A98-C765-4CA6-8210-408C8CD7A045}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGatewayRepository", "PaymentGatewayRepository\PaymentGatewayRepository.csproj", "{FBA30FF1-00C1-406B-97F8-08A9E6313042}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PaymentGatewayRepository", "PaymentGatewayRepository\PaymentGatewayRepository.csproj", "{FBA30FF1-00C1-406B-97F8-08A9E6313042}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MerchantRepository", "MerchantRepository\MerchantRepository.csproj", "{6FD2EAC6-C46B-49BE-A7AB-BA8272766DDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MerchantRepository", "MerchantRepository\MerchantRepository.csproj", "{6FD2EAC6-C46B-49BE-A7AB-BA8272766DDC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedResources", "SharedResources", "{FC44B840-5791-4795-8C78-3F4223AD3CBA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedResource", "SharedResource\SharedResource.csproj", "{9821204B-C47C-4057-9E21-69D24FC8237E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedResource", "SharedResource\SharedResource.csproj", "{9821204B-C47C-4057-9E21-69D24FC8237E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BD21532D-D207-4104-AAF4-4F3EE5C080A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentGatewayTest", "PaymentGatewayTest\PaymentGatewayTest.csproj", "{7DBA91AC-C793-4EB5-96C5-94BE82FD123B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -73,6 +77,10 @@ Global
 		{9821204B-C47C-4057-9E21-69D24FC8237E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9821204B-C47C-4057-9E21-69D24FC8237E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9821204B-C47C-4057-9E21-69D24FC8237E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DBA91AC-C793-4EB5-96C5-94BE82FD123B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DBA91AC-C793-4EB5-96C5-94BE82FD123B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DBA91AC-C793-4EB5-96C5-94BE82FD123B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DBA91AC-C793-4EB5-96C5-94BE82FD123B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +95,7 @@ Global
 		{FBA30FF1-00C1-406B-97F8-08A9E6313042} = {DA8F1A98-C765-4CA6-8210-408C8CD7A045}
 		{6FD2EAC6-C46B-49BE-A7AB-BA8272766DDC} = {DA8F1A98-C765-4CA6-8210-408C8CD7A045}
 		{9821204B-C47C-4057-9E21-69D24FC8237E} = {FC44B840-5791-4795-8C78-3F4223AD3CBA}
+		{7DBA91AC-C793-4EB5-96C5-94BE82FD123B} = {BD21532D-D207-4104-AAF4-4F3EE5C080A8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {003C20E6-E467-4145-BF8C-77065E7F2212}
