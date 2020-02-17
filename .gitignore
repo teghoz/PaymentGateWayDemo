@@ -12,3 +12,11 @@ CheckoutPaymentGatewayDemo/MerchantRepository/obj/
 CheckoutPaymentGatewayDemo/PaymentGatewayModels/obj/
 CheckoutPaymentGatewayDemo/PaymentGatewayRepository/obj/
 CheckoutPaymentGatewayDemo/SharedResource/obj/
+CheckoutPaymentGatewayDemo/PaymentGatewayModels/bin/
+CheckoutPaymentGatewayDemo/PaymentGatewayDbContext/bin/
+CheckoutPaymentGatewayDemo/PaymentGatewayRepository/bin/
+CheckoutPaymentGatewayDemo/MerchantRepository/bin/Debug/netcoreapp3.1/MerchantRepository.dll
+CheckoutPaymentGatewayDemo/SharedResource/bin/
+CheckoutPaymentGatewayDemo/MerchantModels/bin/
+CheckoutPaymentGatewayDemo/MerchantDbContext/bin/
+CheckoutPaymentGatewayDemo/MerchantRepository/bin/
