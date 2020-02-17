@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29709.97
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckoutPaymentGatewayDemo", "CheckoutPaymentGatewayDemo\CheckoutPaymentGatewayDemo.csproj", "{7C9D6675-0932-4E39-B645-060BE113EA96}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7C9D6675-0932-4E39-B645-060BE113EA96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C9D6675-0932-4E39-B645-060BE113EA96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C9D6675-0932-4E39-B645-060BE113EA96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C9D6675-0932-4E39-B645-060BE113EA96}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {003C20E6-E467-4145-BF8C-77065E7F2212}
+	EndGlobalSection
+EndGlobal
