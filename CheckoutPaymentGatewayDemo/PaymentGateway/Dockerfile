@@ -10,16 +10,16 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-nanoserver-1903 AS build
 WORKDIR /src
-COPY ["CheckoutPaymentGatewayDemo/CheckoutPaymentGatewayDemo.csproj", "CheckoutPaymentGatewayDemo/"]
-RUN dotnet restore "CheckoutPaymentGatewayDemo/CheckoutPaymentGatewayDemo.csproj"
+COPY ["PaymentGateway/PaymentGateway.csproj", "PaymentGateway/"]
+RUN dotnet restore "PaymentGateway/PaymentGateway.csproj"
 COPY . .
-WORKDIR "/src/CheckoutPaymentGatewayDemo"
-RUN dotnet build "CheckoutPaymentGatewayDemo.csproj" -c Release -o /app/build
+WORKDIR "/src/PaymentGateway"
+RUN dotnet build "PaymentGateway.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "CheckoutPaymentGatewayDemo.csproj" -c Release -o /app/publish
+RUN dotnet publish "PaymentGateway.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "CheckoutPaymentGatewayDemo.dll"]
+ENTRYPOINT ["dotnet", "PaymentGateway.dll"]
