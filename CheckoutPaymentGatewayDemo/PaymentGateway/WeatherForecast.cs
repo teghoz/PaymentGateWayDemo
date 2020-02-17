@@ -1,6 +1,6 @@
 using System;
 
-namespace CheckoutPaymentGatewayDemo
+namespace PaymentGateway
 {
     public class WeatherForecast
     {

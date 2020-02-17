@@ -1,3 +1,14 @@
 CheckoutPaymentGatewayDemo/.vs/
 CheckoutPaymentGatewayDemo/CheckoutPaymentGatewayDemo/bin/
 CheckoutPaymentGatewayDemo/CheckoutPaymentGatewayDemo/obj/
+CheckoutPaymentGatewayDemo/MerchantDbContext/obj/
+CheckoutPaymentGatewayDemo/MockAcquiringBank/bin/
+CheckoutPaymentGatewayDemo/MockAcquiringBank/obj/
+CheckoutPaymentGatewayDemo/PaymentGateway/bin/
+CheckoutPaymentGatewayDemo/PaymentGateway/obj/
+CheckoutPaymentGatewayDemo/PaymentGatewayDbContext/obj/
+CheckoutPaymentGatewayDemo/MerchantModels/obj/
+CheckoutPaymentGatewayDemo/MerchantRepository/obj/
+CheckoutPaymentGatewayDemo/PaymentGatewayModels/obj/
+CheckoutPaymentGatewayDemo/PaymentGatewayRepository/obj/
+CheckoutPaymentGatewayDemo/SharedResource/obj/
