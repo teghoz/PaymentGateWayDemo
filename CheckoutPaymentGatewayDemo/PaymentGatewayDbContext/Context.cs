@@ -21,8 +21,8 @@ namespace PaymentGatewayDbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            //PaymentGatewaySeeds.See(modelBuilder);
+            PaymentGatewaySeeds.SeedMerchants(modelBuilder);
+            PaymentGatewaySeeds.Roles(modelBuilder).Wait();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

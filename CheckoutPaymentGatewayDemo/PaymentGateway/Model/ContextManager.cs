@@ -11,7 +11,7 @@ namespace PaymentGateway.Model
     {
         public static string GetConnectionString()
         {
-            return ConnectionManager.Connection["ConnectionString"];
+            return ConnectionManager.Connection["ConnectionString:PaymentGateway"];
         }
         public static PaymentGatewayDbContext.PaymentGatewayDbContext PaymentGatewayContext()
         {

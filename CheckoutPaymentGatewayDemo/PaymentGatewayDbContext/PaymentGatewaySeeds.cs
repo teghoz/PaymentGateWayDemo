@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using PaymentGateWayModels;
 using System;
 using System.IO;
 using System.Linq;
@@ -25,39 +26,63 @@ namespace PaymentGatewayDbContext
             _roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
             _hostingEnvironment = provider.GetRequiredService<IHostingEnvironment>();
         }
-        public static async Task<IWebHost> CashboxSeedAsync(this IWebHost host)
+
+        public static async Task<IWebHost> PaymentGatewaySeedAsync(this IWebHost host)
         {
             using (var scope = host.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 Initialize(services);
-                _context.Database.Migrate();          
-                await Roles();
+                _context.Database.Migrate();
+                await MerchantUser(services);
             }
             return host;
         }
 
-        public static async Task Roles()
+        public static async Task Roles(this ModelBuilder _modelBuilder)
         {
-            var roles = new string[]{ "AdminSuper", "Admin", "AdminRead", "AdminWrite", "AdminApproval", "Member" };
-
-            foreach(var r in roles)
-            {
-                bool isExist = await _roleManager.RoleExistsAsync(r);
-
-                if (!isExist)
-                {
-                    var role = new IdentityRole(r);
-                    await _roleManager.CreateAsync(role);
-                }
-            }
+            _modelBuilder.Entity<IdentityRole>().HasData(
+            new IdentityRole { Name = "AdminSuper", NormalizedName = "ADMINSUPER" },
+            new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
+            new IdentityRole { Name = "Merchant", NormalizedName = "MERCHANT"});
 
             await Task.CompletedTask;
         }
 
-        public static void Users()
+        public static ModelBuilder SeedMerchants(this ModelBuilder _modelBuilder)
         {
+            _modelBuilder.Entity<Merchant>().HasData(
 
+                new Merchant { FirstName = "Aghogho", LastName = "Bernard", Email = "aghoghomerchant@gmail.com", Id = 1 });
+
+            return _modelBuilder;
+        }
+
+        public static async Task MerchantUser(IServiceProvider provider)
+        {
+            using (var context = provider.GetRequiredService<PaymentGatewayDbContext>())
+            {
+                if (_context.tblMerchant.Any(a => a.Email == "aghoghomerchant@gmail.com") && !_context.Users.Any(a => a.UserName == "aghoghomerchant@gmail.com"))
+                {
+                    var merchant = _context.tblMerchant.Where(a => a.Email == "aghoghomerchant@gmail.com").FirstOrDefault();
+                    ApplicationUser user = new ApplicationUser
+                    {
+                        MerchantId = merchant.Id,
+                        FirstName = merchant.FirstName,
+                        LastName = merchant.LastName,
+                        Email = merchant.Email,
+                        UserName = merchant.Email,
+                        EmailConfirmed = true,
+                        PhoneNumberConfirmed = true
+                    };
+
+                    var result = await _userManager.CreateAsync(user, "ch@ck0ut");
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Merchant");
+                    }
+                }
+            }
         }
     }
 }

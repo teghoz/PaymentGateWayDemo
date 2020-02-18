@@ -30,6 +30,7 @@ namespace MerchantDbContext
             base.OnModelCreating(modelBuilder);
 
             MerchantSeeds.SeedCustomers(modelBuilder);
+            //MerchantSeeds.Roles().Wait();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

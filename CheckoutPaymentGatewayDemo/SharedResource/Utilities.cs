@@ -79,5 +79,18 @@ namespace SharedResource
             byte[] TextByte = objrij.CreateDecryptor().TransformFinalBlock(encryptedTextByte, 0, encryptedTextByte.Length);
             return Encoding.UTF8.GetString(TextByte);  //it will return readable string
         }
+        public static string RecursiveMessages(this Exception err)
+        {
+            var message = err.Message;
+            try
+            {
+                if (err.InnerException != null)
+                    message += $"{Environment.NewLine}{RecursiveMessages(err.InnerException)}";
+            }
+            catch
+            {
+            }
+            return message;
+        }
     }
 }

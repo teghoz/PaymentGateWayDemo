@@ -14,6 +14,7 @@ namespace PaymentGateway
         private PaymentGatewayDbContext.PaymentGatewayDbContext context = ContextManager.PaymentGatewayContext();
         private CheckOutRepository<Transactions> transactionRepository;
         private CheckOutRepository<CardDetails> carDetailsRepository;
+        private CheckOutRepository<Merchant> merchantRepository;
 
         public CheckOutRepository<Transactions> TransactionRepository
         {
@@ -38,6 +39,19 @@ namespace PaymentGateway
                     this.carDetailsRepository = new CheckOutRepository<CardDetails>(context);
                 }
                 return carDetailsRepository;
+            }
+        }
+
+        public CheckOutRepository<Merchant> MerchantRepository
+        {
+            get
+            {
+
+                if (this.merchantRepository == null)
+                {
+                    this.merchantRepository = new CheckOutRepository<Merchant>(context);
+                }
+                return merchantRepository;
             }
         }
 
