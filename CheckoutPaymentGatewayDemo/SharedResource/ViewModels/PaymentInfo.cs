@@ -7,6 +7,7 @@ namespace SharedResource.ViewModels
     public class PaymentInfo
     {
         public int PaymentId { get; set; }
+        public eCurrency Currency { get; set; }
         public int MerchantId { get; set; }
         public int CustomerId { get; set; }
         public string Email { get; set; }

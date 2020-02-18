@@ -92,5 +92,16 @@ namespace SharedResource
             }
             return message;
         }
+        public static (int month, int year) GetCardExpiry(this string text)
+        {
+            if (text.Contains('/'))
+            {
+                var splittedExpiry = text.Split('/').Select(c => int.Parse(c)).ToArray();
+                int month = splittedExpiry[0];
+                int year = splittedExpiry[1];
+                return (month: month, year: year);
+            }
+            return (0, 0);
+        }
     }
 }

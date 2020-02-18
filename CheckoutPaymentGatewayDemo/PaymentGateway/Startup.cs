@@ -23,6 +23,8 @@ using Microsoft.OpenApi.Models;
 using PaymentGateway.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Reflection;
+using System.IO;
 
 namespace PaymentGateway
 {
@@ -104,14 +106,14 @@ namespace PaymentGateway
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Checkout API",
-                    Description = "CheckOut Member Identification API",
-                    TermsOfService = new Uri("https://www.CheckOutng.com/termsandconditions"),
+                    Title = "Checkout Payment Gateway API",
+                    Description = "CheckOut Payment Gateway API",
+                    TermsOfService = new Uri("https://www.CheckOut.com/termsandconditions"),
                     Contact = new OpenApiContact
                     {
                         Name = "Checkout Ltd",
                         Email = string.Empty,
-                        Url = new Uri("https://twitter.com/@CheckOutng"),
+                        Url = new Uri("https://twitter.com/@CheckOut"),
                     },
                     License = new OpenApiLicense
                     {
@@ -119,6 +121,10 @@ namespace PaymentGateway
                         Url = new Uri("https://example.com/license"),
                     }
                 });
+
+                var xmlFile = $".xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
 
             services.AddLogging();

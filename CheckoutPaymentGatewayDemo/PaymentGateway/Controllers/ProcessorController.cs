@@ -57,13 +57,6 @@ namespace PaymentGateway.Controllers
             return new string[] { "value1", "value2" };
         }
 
-        // GET: api/Processor/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
         [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> MerchantLogin([FromForm] LoginBaggage login)
@@ -135,7 +128,6 @@ namespace PaymentGateway.Controllers
             }
 
         }
-
         private async Task<string> GetToken(ApplicationUser currentMerchant)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -161,6 +153,7 @@ namespace PaymentGateway.Controllers
             return tokenString;
         }
 
+        [AllowAnonymous]
         // POST: api/Processor
         [HttpPost("Merchant/Registration")]
         public async Task<IActionResult> RegisterMerchant([FromForm] MerchantRegistration model)
@@ -195,7 +188,7 @@ namespace PaymentGateway.Controllers
                 if (result.Succeeded)
                 {
                     await _paymentGatewayUserManager.AddToRoleAsync(user, "Merchant");
-                    return Ok(new { Message = "Merchant Registration Succesful", Status = 1 });
+                    return Ok(new { Message = "Merchant Registration Succesful", Status = 1, MerchantId = merchant.Id });
                 }
                 else
                 {
@@ -224,28 +217,61 @@ namespace PaymentGateway.Controllers
                 if(merchantInfo != null)
                 {
                     //post the model to acquiring bank
-                    var card = new CardDetails
+                    var card = unitOfWork.CarDetailsRepository.Get(c => Utilities.DecryptString(c.CreditCardNumber, _applicationSettings.Secret) == model.CreditCardNumber).FirstOrDefault();
+                    if(card == null)
                     {
-                        CardType = model.CardType,
-                        CreditCardNumber = model.CreditCardNumber.EncryptString(ConfigurationManager.AppSetting["EncryptionKey"]),
-                        cvv = model.cvv.EncryptString(ConfigurationManager.AppSetting["EncryptionKey"]),
-                        Expiry = model.Expiry,
-                        MerchantId = model.MerchantId,
-                        Token = Utilities.GenerateToken(15)
-                    };
-                    unitOfWork.CarDetailsRepository.Insert(card);
+                        card = new CardDetails
+                        {
+                            CardType = model.CardType,
+                            CreditCardNumber = model.CreditCardNumber.EncryptString(_applicationSettings.Secret),
+                            cvv = model.cvv.EncryptString(_applicationSettings.Secret),
+                            Expiry = model.Expiry,
+                            MerchantId = model.MerchantId,
+                            Token = Utilities.GenerateToken(15)
+                        };
+                        unitOfWork.CarDetailsRepository.Insert(card);
+                        unitOfWork.Save();
+                    }
 
                     var transaction = new Transactions
                     {
-                        Amount = model.Amount
+                        MerchantId = merchantInfo.Id,
+                        Amount = model.Amount,
+                        Currency = model.Currency,
+                        Code = $@"PG-{Utilities.GenerateToken(15)}",
+                        Status = eStatusTypes.Pending,
+                        CardId = card.Id
                     };
                     unitOfWork.TransactionRepository.Insert(transaction);
                     unitOfWork.Save();
 
-                    var client = new RestClient(ConfigurationManager.AppSetting["MockBankUri"]);
-                    var request = new RestRequest("statuses/home_timeline.json", DataFormat.Json);
+                    var client = new RestClient($@"{ConfigurationManager.AppSetting["MockBankUri"]}");
+                    var bagg = new BankVerifcationBaggage {
+                        Amount = model.Amount,
+                        CardCVV = model.cvv,
+                        CardExpiry = model.Expiry,
+                        CardNumber = model.CreditCardNumber
+                    };
+
+                    var request = new RestRequest("api/BankVerify/Verify", DataFormat.Json);
+                    request.RequestFormat = DataFormat.Json;
+                    request.AddJsonBody(bagg);
                     var response = client.Post(request);
-                    //return result
+                    var bankVerificationResponse = JsonConvert.DeserializeObject<BankVerificationResponse>(response.Content);
+
+                    if (bankVerificationResponse.Status)
+                    {
+                        transaction.Status = eStatusTypes.Success;
+                        transaction.BankTransactionCode = bankVerificationResponse.TransactionCode;
+                        unitOfWork.TransactionRepository.Update(transaction);
+                        return Ok(new { Message = "Transaction Completed Succesfully", TransanctionCode = transaction.Code, Status = true });
+                    }
+                    else
+                    {
+                        transaction.Status = eStatusTypes.Failure;
+                        unitOfWork.TransactionRepository.Update(transaction);
+                        return BadRequest(new { message = bankVerificationResponse.Message});
+                    }
                 }
                 else
                 {
@@ -260,26 +286,69 @@ namespace PaymentGateway.Controllers
                 paymentResult.Status = SharedResource.eStatusTypes.Failure;
                 return BadRequest(JsonConvert.SerializeObject(paymentResult));
             }
-
-            return BadRequest(new { message = "Something Went Wrong" });
         }
-
-        // POST: api/Processor
-        [HttpPost]
-        public void Post([FromBody] string value)
+        /// <summary>
+        /// Get All Merchant Transactions
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        [HttpPost("Merchant/Transactions")]
+        public async Task<IActionResult> MerchantTransctions(int start, int length)
         {
+            try
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    var merchantId = int.Parse(User.Claims.First(u => u.Type == ClaimTypes.Name).Value);
+                    var listCount = unitOfWork.TransactionRepository.Get(t => t.MerchantId == merchantId).Count();
+                    int value = (listCount - start < 0 ? 1 : (listCount - start));
+
+                    return Ok(new
+                    {
+                        recordsFiltered = length,
+                        recordsTotal = listCount,
+                        Data = unitOfWork.TransactionRepository.Get(m => m.MerchantId == merchantId).Skip(start).Take(Math.Min(length, value)).ToList()
+                    });
+                }
+                else
+                {
+                    return BadRequest(new { message = $@"Wrong/Expired Token" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.RecursiveMessages() });
+            }
         }
-
-        // PUT: api/Processor/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        /// <summary>
+        /// Get a particular merchant transaction
+        /// </summary>
+        /// <param name="reference"></param>
+        /// <returns></returns>
+        [HttpGet("Merchant/Transaction")]
+        public async Task<IActionResult> MerchantTransction(string reference)
         {
-        }
+            try
+            {
+                if (User.Identity.IsAuthenticated)
+                {
+                    var merchantId = int.Parse(User.Claims.First(u => u.Type == ClaimTypes.Name).Value);
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+                    return Ok(new
+                    {
+                        Data = unitOfWork.TransactionRepository.Get(m => m.MerchantId == merchantId && m.Code == reference).FirstOrDefault()
+                    });
+                }
+                else
+                {
+                    return BadRequest(new { message = $@"Wrong/Expired Token" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.RecursiveMessages() });
+            }
         }
     }
 }

@@ -29,5 +29,19 @@ namespace PaymentGatewayTest
             var token = Utilities.GenerateToken(15);
             Assert.AreEqual(token.Length, 15);
         }
+
+        [Test]
+        public void TestExpiryUtility()
+        {
+            var testString = "10/21";
+            var expiry = Utilities.GetCardExpiry(testString);
+            Assert.AreEqual(expiry.month, 10);
+            Assert.AreEqual(expiry.year, 21);
+
+            var testStringWithoutSlash = "1021";
+            var expiryWithoutSlah = Utilities.GetCardExpiry(testStringWithoutSlash);
+            Assert.AreEqual(expiryWithoutSlah.month, 0);
+            Assert.AreEqual(expiryWithoutSlah.year, 0);
+        }
     }
 }

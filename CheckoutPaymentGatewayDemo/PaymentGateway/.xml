@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PaymentGateway</name>
+    </assembly>
+    <members>
+        <member name="M:PaymentGateway.Controllers.ProcessorController.MerchantTransctions(System.Int32,System.Int32)">
+            <summary>
+            Get All Merchant Transactions
+            </summary>
+            <param name="start"></param>
+            <param name="length"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PaymentGateway.Controllers.ProcessorController.MerchantTransction(System.String)">
+            <summary>
+            Get a particular merchant transaction
+            </summary>
+            <param name="reference"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
