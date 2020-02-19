@@ -15,6 +15,7 @@ namespace SharedResource.ViewModels
         public string CreditCardNumber { get; set; }
         public string Expiry { get; set; }
         public string CardType { get; set; }
+        public string RedirectUrl { get; set; }
         public decimal Amount { get; set; }
     }
 }
