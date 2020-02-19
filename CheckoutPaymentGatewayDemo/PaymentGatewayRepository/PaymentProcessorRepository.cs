@@ -1,5 +1,6 @@
-﻿using PaymentGateWayModels.ViewModels;
-using PaymentGatewayRepository.Interface;
+﻿using PaymentGatewayRepository.Interface;
+using SharedResource.ViewModels;
+using SharedResource.ViewModels.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Text;

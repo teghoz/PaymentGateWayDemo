@@ -16,12 +16,16 @@ namespace PaymentGatewayDbContext
 
         public DbSet<Merchant> tblMerchant { get; set; }
         public DbSet<Transactions> tblTransactions { get; set; }
+        public DbSet<CardDetails> tblCardDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Transactions>()
+               .HasOne(p => p.Merchant).WithMany().HasForeignKey(p => p.MerchantId).OnDelete(DeleteBehavior.Restrict);
 
-            //PaymentGatewaySeeds.See(modelBuilder);
+            base.OnModelCreating(modelBuilder);
+            PaymentGatewaySeeds.SeedMerchants(modelBuilder);
+            PaymentGatewaySeeds.Roles(modelBuilder).Wait();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

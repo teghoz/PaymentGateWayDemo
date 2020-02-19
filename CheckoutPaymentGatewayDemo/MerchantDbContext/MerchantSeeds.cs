@@ -23,7 +23,7 @@ namespace MerchantDbContext
             _roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
             _hostingEnvironment = provider.GetRequiredService<IHostingEnvironment>();
         }
-        public static async Task<IWebHost> CashboxSeedAsync(this IWebHost host)
+        public static async Task<IWebHost> MerchantSeedAsync(this IWebHost host)
         {
             using (var scope = host.Services.CreateScope())
             {

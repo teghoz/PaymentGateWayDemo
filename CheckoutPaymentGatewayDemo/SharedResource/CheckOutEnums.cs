@@ -17,4 +17,11 @@ namespace SharedResource
         BankWire = 1,
         Mobile = 2
     }
+
+    public enum eCurrency
+    {
+        MUR = 0,
+        GBP = 1,
+        USD = 2
+    }
 }
