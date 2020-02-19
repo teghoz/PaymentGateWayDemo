@@ -316,7 +316,7 @@ namespace PaymentGateway.Controllers
                     {
                         recordsFiltered = length,
                         recordsTotal = listCount,
-                        Data = unitOfWork.TransactionRepository.Get(m => m.MerchantId == merchantId, , null, "CardDetails").Skip(start).Take(Math.Min(length, value)).ToList()
+                        Data = unitOfWork.TransactionRepository.Get(m => m.MerchantId == merchantId, null, "CardDetails").Skip(start).Take(Math.Min(length, value)).ToList()
                     });
                 }
                 else
