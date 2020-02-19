@@ -1,0 +1,6 @@
+﻿{
+  "ConnectionString": {
+    "Merchant": "Server=(localdb)\\mssqllocaldb;Database=Merchat;Trusted_Connection=True;ConnectRetryCount=0",
+    "PaymentGateway": "Server=(localdb)\\mssqllocaldb;Database=PaymentGateway;Trusted_Connection=True;ConnectRetryCount=0"
+  }
+}
