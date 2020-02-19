@@ -4,6 +4,27 @@
         <name>PaymentGateway</name>
     </assembly>
     <members>
+        <member name="M:PaymentGateway.Controllers.ProcessorController.MerchantLogin(SharedResource.ViewModels.LoginBaggage)">
+            <summary>
+            Merchant Login. Returns a token for authentication
+            </summary>
+            <param name="login"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PaymentGateway.Controllers.ProcessorController.RegisterMerchant(SharedResource.ViewModels.MerchantRegistration)">
+            <summary>
+            Register a Merchant
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
+        <member name="M:PaymentGateway.Controllers.ProcessorController.Process(SharedResource.ViewModels.PaymentInfo)">
+            <summary>
+            Process a mechant payment. Requires Authentication
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:PaymentGateway.Controllers.ProcessorController.MerchantTransctions(System.Int32,System.Int32)">
             <summary>
             Get All Merchant Transactions

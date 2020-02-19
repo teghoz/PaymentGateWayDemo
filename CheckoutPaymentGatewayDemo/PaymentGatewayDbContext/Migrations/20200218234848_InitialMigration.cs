@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MerchantDbContext.Migrations
+namespace PaymentGatewayDbContext.Migrations
 {
     public partial class InitialMigration : Migration
     {
@@ -22,36 +22,23 @@ namespace MerchantDbContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblCustomer",
+                name: "tblMerchant",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateLastUpdated = table.Column<DateTime>(nullable: false),
+                    Email = table.Column<string>(nullable: true),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true)
+                    FullName = table.Column<string>(nullable: true),
+                    Username = table.Column<string>(nullable: true),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblCustomer", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblProducts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateLastUpdated = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    Price = table.Column<decimal>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblProducts", x => x.Id);
+                    table.PrimaryKey("PK_tblMerchant", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -94,7 +81,7 @@ namespace MerchantDbContext.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
-                    CustomerId = table.Column<int>(nullable: false),
+                    MerchantId = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     FullName = table.Column<string>(nullable: true)
@@ -103,35 +90,35 @@ namespace MerchantDbContext.Migrations
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetUsers_tblCustomer_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "tblCustomer",
+                        name: "FK_AspNetUsers_tblMerchant_MerchantId",
+                        column: x => x.MerchantId,
+                        principalTable: "tblMerchant",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "tblOrders",
+                name: "tblCardDetails",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateLastUpdated = table.Column<DateTime>(nullable: false),
-                    CustomerId = table.Column<int>(nullable: false),
-                    Code = table.Column<string>(nullable: true),
-                    OrderDate = table.Column<DateTime>(nullable: false),
-                    Status = table.Column<int>(nullable: false),
-                    TotalPrice = table.Column<decimal>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false)
+                    MerchantId = table.Column<int>(nullable: false),
+                    cvv = table.Column<string>(nullable: true),
+                    CreditCardNumber = table.Column<string>(nullable: true),
+                    Expiry = table.Column<string>(nullable: true),
+                    CardType = table.Column<string>(nullable: true),
+                    Token = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_tblOrders", x => x.Id);
+                    table.PrimaryKey("PK_tblCardDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tblOrders_tblCustomer_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "tblCustomer",
+                        name: "FK_tblCardDetails_tblMerchant_MerchantId",
+                        column: x => x.MerchantId,
+                        principalTable: "tblMerchant",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -222,89 +209,52 @@ namespace MerchantDbContext.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Payment",
+                name: "tblTransactions",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     DateLastUpdated = table.Column<DateTime>(nullable: false),
-                    OrderId = table.Column<int>(nullable: false),
-                    CustomerCardDetailsId = table.Column<int>(nullable: false),
-                    Amount = table.Column<decimal>(nullable: false)
+                    Amount = table.Column<decimal>(nullable: false),
+                    CardId = table.Column<int>(nullable: false),
+                    MerchantId = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    Currency = table.Column<int>(nullable: false),
+                    Code = table.Column<string>(nullable: true),
+                    BankTransactionCode = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payment", x => x.Id);
+                    table.PrimaryKey("PK_tblTransactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Payment_tblOrders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "tblOrders",
+                        name: "FK_tblTransactions_tblCardDetails_CardId",
+                        column: x => x.CardId,
+                        principalTable: "tblCardDetails",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_tblTransactions_tblMerchant_MerchantId",
+                        column: x => x.MerchantId,
+                        principalTable: "tblMerchant",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "tblOrderDetails",
-                columns: table => new
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateLastUpdated = table.Column<DateTime>(nullable: false),
-                    OrderId = table.Column<int>(nullable: false),
-                    ProductId = table.Column<int>(nullable: false),
-                    Quantity = table.Column<int>(nullable: false),
-                    Price = table.Column<decimal>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblOrderDetails", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tblOrderDetails_tblOrders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "tblOrders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_tblOrderDetails_tblProducts_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "tblProducts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "tblPaymentMethods",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateLastUpdated = table.Column<DateTime>(nullable: false),
-                    PaymentId = table.Column<int>(nullable: false),
-                    PaymentType = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_tblPaymentMethods", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_tblPaymentMethods_Payment_PaymentId",
-                        column: x => x.PaymentId,
-                        principalTable: "Payment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    { "9700c25e-d3ea-41d0-b2d0-3869e7fa09a3", "0c412a88-5fde-4739-9395-3bde03c26c99", "AdminSuper", "ADMINSUPER" },
+                    { "e6ebd491-cbe2-43d9-adc9-7644f761b7ad", "d6e92ab4-a889-413e-a6f8-7ab49b0b57ae", "Admin", "ADMIN" },
+                    { "34ec8e1f-a3ab-4476-aa14-3be277e67287", "e3b621da-7dc8-4ce3-bd7b-06f43bfdaa6c", "Merchant", "MERCHANT" }
                 });
 
             migrationBuilder.InsertData(
-                table: "tblCustomer",
-                columns: new[] { "Id", "DateCreated", "DateLastUpdated", "Email", "FirstName", "LastName" },
-                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "aghoghobernard@gmail.com", "Aghogho", "Bernard" });
-
-            migrationBuilder.InsertData(
-                table: "tblCustomer",
-                columns: new[] { "Id", "DateCreated", "DateLastUpdated", "Email", "FirstName", "LastName" },
-                values: new object[] { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "williambernard@gmail.com", "William", "Bernard" });
+                table: "tblMerchant",
+                columns: new[] { "Id", "DateCreated", "DateLastUpdated", "Email", "FirstName", "FullName", "IsActive", "LastName", "Username" },
+                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "aghoghomerchant@gmail.com", "Aghogho", null, false, "Bernard", null });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -334,9 +284,9 @@ namespace MerchantDbContext.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_CustomerId",
+                name: "IX_AspNetUsers_MerchantId",
                 table: "AspNetUsers",
-                column: "CustomerId");
+                column: "MerchantId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -351,29 +301,19 @@ namespace MerchantDbContext.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Payment_OrderId",
-                table: "Payment",
-                column: "OrderId");
+                name: "IX_tblCardDetails_MerchantId",
+                table: "tblCardDetails",
+                column: "MerchantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblOrderDetails_OrderId",
-                table: "tblOrderDetails",
-                column: "OrderId");
+                name: "IX_tblTransactions_CardId",
+                table: "tblTransactions",
+                column: "CardId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tblOrderDetails_ProductId",
-                table: "tblOrderDetails",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tblOrders_CustomerId",
-                table: "tblOrders",
-                column: "CustomerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_tblPaymentMethods_PaymentId",
-                table: "tblPaymentMethods",
-                column: "PaymentId");
+                name: "IX_tblTransactions_MerchantId",
+                table: "tblTransactions",
+                column: "MerchantId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -394,10 +334,7 @@ namespace MerchantDbContext.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "tblOrderDetails");
-
-            migrationBuilder.DropTable(
-                name: "tblPaymentMethods");
+                name: "tblTransactions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -406,16 +343,10 @@ namespace MerchantDbContext.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "tblProducts");
+                name: "tblCardDetails");
 
             migrationBuilder.DropTable(
-                name: "Payment");
-
-            migrationBuilder.DropTable(
-                name: "tblOrders");
-
-            migrationBuilder.DropTable(
-                name: "tblCustomer");
+                name: "tblMerchant");
         }
     }
 }

@@ -20,6 +20,9 @@ namespace PaymentGatewayDbContext
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Transactions>()
+               .HasOne(p => p.Merchant).WithMany().HasForeignKey(p => p.MerchantId).OnDelete(DeleteBehavior.Restrict);
+
             base.OnModelCreating(modelBuilder);
             PaymentGatewaySeeds.SeedMerchants(modelBuilder);
             PaymentGatewaySeeds.Roles(modelBuilder).Wait();

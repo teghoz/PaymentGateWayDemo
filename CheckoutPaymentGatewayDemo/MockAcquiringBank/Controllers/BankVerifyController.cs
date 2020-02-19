@@ -13,13 +13,11 @@ namespace MockAcquiringBank.Controllers
     [ApiController]
     public class BankVerifyController : ControllerBase
     {
-        // GET: api/BankVerify
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
+        /// <summary>
+        /// Mock Endpoint to do actual card credit check and payout
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPost("Verify")]
         public async Task<IActionResult> VerifyCardOayment([FromBody] BankVerifcationBaggage model)
         {
@@ -57,7 +55,7 @@ namespace MockAcquiringBank.Controllers
             }
             
 
-            return BadRequest(new BankVerificationResponse { Status = false, Message = "Something We" });
+            return BadRequest(new BankVerificationResponse { Status = false, Message = "Something Went wrong. Contact Payment Gateway" });
         }
     }
 }

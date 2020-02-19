@@ -98,7 +98,7 @@ namespace SharedResource
             {
                 var splittedExpiry = text.Split('/').Select(c => int.Parse(c)).ToArray();
                 int month = splittedExpiry[0];
-                int year = splittedExpiry[1];
+                int year = 2000 + splittedExpiry[1];
                 return (month: month, year: year);
             }
             return (0, 0);

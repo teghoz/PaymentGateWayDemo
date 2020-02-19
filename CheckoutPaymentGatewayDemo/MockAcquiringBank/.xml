@@ -4,5 +4,12 @@
         <name>MockAcquiringBank</name>
     </assembly>
     <members>
+        <member name="M:MockAcquiringBank.Controllers.BankVerifyController.VerifyCardOayment(SharedResource.ViewModels.BankVerifcationBaggage)">
+            <summary>
+            Mock Endpoint to do actual card credit check and payout
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

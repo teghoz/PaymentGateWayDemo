@@ -49,16 +49,14 @@ namespace PaymentGateway.Controllers
             _roleManager = roleManager;
             _applicationSettings = options.Value;
         }
-        // GET: api/Processor
-        [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
 
+        /// <summary>
+        /// Merchant Login. Returns a token for authentication
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost("Login")]
+        [HttpPost("Login")]     
         public async Task<IActionResult> MerchantLogin([FromForm] LoginBaggage login)
         {
             string userName = login.UserName;
@@ -153,8 +151,12 @@ namespace PaymentGateway.Controllers
             return tokenString;
         }
 
-        [AllowAnonymous]
-        // POST: api/Processor
+        /// <summary>
+        /// Register a Merchant
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [AllowAnonymous]             
         [HttpPost("Merchant/Registration")]
         public async Task<IActionResult> RegisterMerchant([FromForm] MerchantRegistration model)
         {
@@ -188,7 +190,7 @@ namespace PaymentGateway.Controllers
                 if (result.Succeeded)
                 {
                     await _paymentGatewayUserManager.AddToRoleAsync(user, "Merchant");
-                    return Ok(new { Message = "Merchant Registration Succesful", Status = 1, MerchantId = merchant.Id });
+                    return Ok(new { Message = "Merchant Registration Succesful", Status = 1, Merchant = merchant });
                 }
                 else
                 {
@@ -202,6 +204,11 @@ namespace PaymentGateway.Controllers
 
             return BadRequest(new { message = "Something Went Wrong" });
         }
+        /// <summary>
+        /// Process a mechant payment. Requires Authentication
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         // POST: api/Processor
         [HttpPost("Process")]
         public async Task<IActionResult> Process([FromForm] PaymentInfo model)
@@ -217,7 +224,8 @@ namespace PaymentGateway.Controllers
                 if(merchantInfo != null)
                 {
                     //post the model to acquiring bank
-                    var card = unitOfWork.CarDetailsRepository.Get(c => Utilities.DecryptString(c.CreditCardNumber, _applicationSettings.Secret) == model.CreditCardNumber).FirstOrDefault();
+                    var encryptedCardNumber = Utilities.EncryptString(model.CreditCardNumber, _applicationSettings.Secret);
+                    var card = unitOfWork.CarDetailsRepository.Get(c => c.CreditCardNumber == encryptedCardNumber).FirstOrDefault();
                     if(card == null)
                     {
                         card = new CardDetails
@@ -270,7 +278,7 @@ namespace PaymentGateway.Controllers
                     {
                         transaction.Status = eStatusTypes.Failure;
                         unitOfWork.TransactionRepository.Update(transaction);
-                        return BadRequest(new { message = bankVerificationResponse.Message});
+                        return BadRequest(new { message = bankVerificationResponse.Message, TransanctionCode = transaction.Code, Status = false });
                     }
                 }
                 else
@@ -308,7 +316,7 @@ namespace PaymentGateway.Controllers
                     {
                         recordsFiltered = length,
                         recordsTotal = listCount,
-                        Data = unitOfWork.TransactionRepository.Get(m => m.MerchantId == merchantId).Skip(start).Take(Math.Min(length, value)).ToList()
+                        Data = unitOfWork.TransactionRepository.Get(m => m.MerchantId == merchantId, , null, "CardDetails").Skip(start).Take(Math.Min(length, value)).ToList()
                     });
                 }
                 else
@@ -337,7 +345,7 @@ namespace PaymentGateway.Controllers
 
                     return Ok(new
                     {
-                        Data = unitOfWork.TransactionRepository.Get(m => m.MerchantId == merchantId && m.Code == reference).FirstOrDefault()
+                        Data = unitOfWork.TransactionRepository.Get(m => m.MerchantId == merchantId && m.Code == reference, null, "CardDetails").FirstOrDefault()
                     });
                 }
                 else
