@@ -9,12 +9,28 @@ using System.Threading.Tasks;
 
 namespace PaymentGateway
 {
-    public class UnitOfWork: IDisposable
+    public class UnitOfWork : IDisposable
     {
         private PaymentGatewayDbContext.PaymentGatewayDbContext context = ContextManager.PaymentGatewayContext();
         private CheckOutRepository<Transactions> transactionRepository;
         private CheckOutRepository<CardDetails> carDetailsRepository;
         private CheckOutRepository<Merchant> merchantRepository;
+
+        public UnitOfWork()
+        {
+
+        }
+        public UnitOfWork(PaymentGatewayDbContext.PaymentGatewayDbContext _context)
+        {
+            context = _context;
+        }
+        //public UnitOfWork(CheckOutRepository<Transactions> _transactionRepository, CheckOutRepository<CardDetails> _carDetailsRepository,
+        //    CheckOutRepository<Merchant> _merchantRepository, PaymentGatewayDbContext.PaymentGatewayDbContext context)
+        //{
+        //    this.carDetailsRepository = _carDetailsRepository;
+        //    this.merchantRepository = _merchantRepository;
+        //    this.transactionRepository = _transactionRepository;
+        //}
 
         public CheckOutRepository<Transactions> TransactionRepository
         {

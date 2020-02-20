@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture" Version="4.11.0" />
+    <PackageReference Include="AutoFixture.AutoMoq" Version="4.11.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.2" />
+    <PackageReference Include="Moq" Version="4.13.1" />
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
@@ -18,13 +22,13 @@
   <ItemGroup>
     <ProjectReference Include="..\MerchantRepository\MerchantRepository.csproj" />
     <ProjectReference Include="..\PaymentGatewayRepository\PaymentGatewayRepository.csproj" />
+    <ProjectReference Include="..\PaymentGateway\PaymentGateway.csproj" />
     <ProjectReference Include="..\SharedResource\SharedResource.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <SpecFlowFeatureFiles Update="Features\MerchantValidPostRequest.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-    </SpecFlowFeatureFiles>
+    <Folder Include="Features\" />
+    <Folder Include="Steps\" />
   </ItemGroup>
 
 </Project>

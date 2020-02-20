@@ -23,7 +23,7 @@ namespace MockAcquiringBank.Controllers
         {
             //check if the card exist
             BankRepository bankRepository = new BankRepository();
-            if(bankRepository.CardBank().Any(c => c.CardNumber == model.CardNumber))
+            if(bankRepository.CardBank().Any(c => c.CardNumber.RemoveWhitespaceAndNumber() == model.CardNumber.RemoveWhitespaceAndNumber()))
             {
                 var expiryCheck = model.CardExpiry.GetCardExpiry();
                 if (expiryCheck.month != 0 && expiryCheck.year != 0)
@@ -33,7 +33,7 @@ namespace MockAcquiringBank.Controllers
                     if (today.Year <= expiryCheck.year && today.Month <= expiryCheck.month)
                     {
                         //check if the card has sufficient balance
-                        if(model.Amount <= bankRepository.CardBank().Where(c => c.CardNumber == model.CardNumber).FirstOrDefault().Balance)
+                        if(model.Amount <= bankRepository.CardBank().Where(c => c.CardNumber.RemoveWhitespaceAndNumber() == model.CardNumber.RemoveWhitespaceAndNumber()).FirstOrDefault().Balance)
                         {
                             return Ok(new BankVerificationResponse
                             {
