@@ -50,28 +50,10 @@ dotnet ef migrations add [YourDescription] -c PaymentGatewayDbContext.PaymentGat
 dotnet ef database update --project PaymentGatewayDbContext 
 ```
 
-## Requirement
-**Node JS.**
+## Improvements
+**WebHooks.**
+Use of ASP.Net  Webhooks. Would be a more robust option in production instead of the manual approach i have used.
 
-### Check NodeJS Existence
-```bash
-node -v
-```
-Run the above command on terminal. If no version number is outputted, you probably dont have node installed.
-
-
-### Run Demo
-```bash
-npm run demo
-```
-### Frontend Test
-See [Qunit Test](js/afrinic-test.js).
-
-### NodeJS Test
-See [Mocha Test](test/server-test.js).
-
-### Sample Code
-See [List View](js/afrinic-list.js).
 
 # Technologies Used
 * WebApi.
