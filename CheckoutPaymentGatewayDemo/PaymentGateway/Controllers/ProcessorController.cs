@@ -24,6 +24,8 @@ using PaymentGateway.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using StackExchange.Profiling;
+using FluentValidation.Results;
+using Hangfire;
 
 namespace PaymentGateway.Controllers
 {
@@ -231,7 +233,7 @@ namespace PaymentGateway.Controllers
                     var merchantInfo = unitOfWork.MerchantRepository.GetByID(model.MerchantId);
                     if (merchantInfo != null)
                     {
-                        Program.log.Info($@"Validatoin Succesful");
+                        Program.log.Info($@"Validation Succesful");
                         Program.log.Info($@"Saving Card Details");
                         //post the model to acquiring bank
                         var encryptedCardNumber = Utilities.EncryptString(model.CreditCardNumber, _applicationSettings.Secret);
@@ -317,6 +319,30 @@ namespace PaymentGateway.Controllers
             }
         }
         /// <summary>
+        /// Processes request in the queue and should post back response to provided endpoint
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("Process/Queued")]
+        public async Task<string> QueuedProcess([FromForm] PaymentInfo model)
+        {
+            Program.log.Info($@"Queued Process endpoint invoked");
+            Program.log.Info($@"Baggage {JsonConvert.SerializeObject(model)}");
+
+            var profiler = MiniProfiler.StartNew("Payment Gateway");
+            using (profiler.Step("Queued Process Workflow"))
+            {
+                //validate the model
+                var paymentResult = new PaymentResult();
+                var validator = new PaymentValidatorQueued();
+                var results = validator.Validate(model);
+                Program.log.Info($@"Queued Process baggage validation {JsonConvert.SerializeObject(results.Errors.Select(e => e.ErrorMessage).ToList())}");
+
+                var job = BackgroundJob.Enqueue(() => TaskManager.GatewayProcessor(results, model, profiler, paymentResult, unitOfWork, _applicationSettings, null));
+                return job;
+            }
+        }
+        /// <summary>
         /// Get All Merchant Transactions
         /// </summary>
         /// <param name="start"></param>
@@ -378,6 +404,12 @@ namespace PaymentGateway.Controllers
             {
                 return BadRequest(new { message = ex.RecursiveMessages() });
             }
+        }
+        [AllowAnonymous]
+        [HttpPost("Merchant/TestReciever")]
+        public async Task TestReciever(object payload)
+        {
+            Program.log.Info($@"Queued Reciever invoked endpoint invoked {JsonConvert.SerializeObject(payload)}");
         }
     }
 }

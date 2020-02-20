@@ -53,6 +53,11 @@ namespace PaymentGatewayRepository
             return dbSet.Find(id);
         }
 
+        public virtual int Count()
+        {
+            return dbSet.Count();
+        }
+
         public virtual void Insert(TEntity entity)
         {
             dbSet.Add(entity);
