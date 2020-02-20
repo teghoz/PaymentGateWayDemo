@@ -25,6 +25,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using System.IO;
+using Hangfire;
+using Hangfire.Console;
 
 namespace PaymentGateway
 {
@@ -128,6 +130,11 @@ namespace PaymentGateway
             });
 
             services.AddLogging();
+            services.AddHangfire(config => config.UseSqlServerStorage(ConnectionManager.Connection["ConnectionString: PaymentGateway"]));
+            services.AddHangfire(config => {
+                config.UseSqlServerStorage(ConnectionManager.Connection["ConnectionString"]);
+                config.UseConsole();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -163,6 +170,20 @@ namespace PaymentGateway
             //IHost not registering --IHost host //need to investigate
             //MerchantSeeds.MerchantSeedAsync(host).Wait();
             //PaymentGatewaySeeds.PaymentGatewaySeedAsync(host).Wait();
+
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                //since it is a demo i am leaving out the authorization
+                //Authorization = new[] { new CheckoutHangfireAuthorizationFilter() },
+                DashboardTitle = "Checkout Job Manager"
+            });
+
+            var options = new BackgroundJobServerOptions
+            {
+                WorkerCount = Environment.ProcessorCount * 5,
+                ShutdownTimeout = TimeSpan.FromSeconds(150)
+            };
+            app.UseHangfireServer(options);
         }
     }
 }

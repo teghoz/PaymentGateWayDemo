@@ -24,6 +24,8 @@ using PaymentGateway.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using StackExchange.Profiling;
+using FluentValidation.Results;
+using Hangfire;
 
 namespace PaymentGateway.Controllers
 {
@@ -225,95 +227,123 @@ namespace PaymentGateway.Controllers
                 var results = validator.Validate(model);
                 Program.log.Info($@"Process baggage validation {JsonConvert.SerializeObject(results.Errors.Select(e => e.ErrorMessage).ToList())}");
 
-                if (results.IsValid)
+                return await ProcessAction(results, model, profiler, paymentResult);
+            }
+        }
+        /// <summary>
+        /// Processes request in the queue and should post back response to provided endpoint
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost("Process/Queued")]
+        public async Task<string> QueuedProcess([FromForm] PaymentInfo model)
+        {
+            Program.log.Info($@"Queued Process endpoint invoked");
+            Program.log.Info($@"Baggage {JsonConvert.SerializeObject(model)}");
+
+            var profiler = MiniProfiler.StartNew("Payment Gateway");
+            using (profiler.Step("Queued Process Workflow"))
+            {
+                //validate the model
+                var paymentResult = new PaymentResult();
+                var validator = new PaymentValidatorQueued();
+                var results = validator.Validate(model);
+                Program.log.Info($@"Queued Process baggage validation {JsonConvert.SerializeObject(results.Errors.Select(e => e.ErrorMessage).ToList())}");
+
+                var job = BackgroundJob.Enqueue(() => TaskManager.GatewayProcessor(results, model, profiler, paymentResult, unitOfWork, _applicationSettings, null));
+                return job;
+            }
+        }
+        public async Task<IActionResult> ProcessAction(ValidationResult results, PaymentInfo model, MiniProfiler profiler, PaymentResult paymentResult)
+        {
+            if (results.IsValid)
+            {
+                Program.log.Info($@"Validation Succesful");
+                var merchantInfo = unitOfWork.MerchantRepository.GetByID(model.MerchantId);
+                if (merchantInfo != null)
                 {
                     Program.log.Info($@"Validation Succesful");
-                    var merchantInfo = unitOfWork.MerchantRepository.GetByID(model.MerchantId);
-                    if (merchantInfo != null)
+                    Program.log.Info($@"Saving Card Details");
+                    //post the model to acquiring bank
+                    var encryptedCardNumber = Utilities.EncryptString(model.CreditCardNumber, _applicationSettings.Secret);
+                    var card = unitOfWork.CarDetailsRepository.Get(c => c.CreditCardNumber == encryptedCardNumber).FirstOrDefault();
+                    if (card == null)
                     {
-                        Program.log.Info($@"Validatoin Succesful");
-                        Program.log.Info($@"Saving Card Details");
-                        //post the model to acquiring bank
-                        var encryptedCardNumber = Utilities.EncryptString(model.CreditCardNumber, _applicationSettings.Secret);
-                        var card = unitOfWork.CarDetailsRepository.Get(c => c.CreditCardNumber == encryptedCardNumber).FirstOrDefault();
-                        if (card == null)
+                        card = new CardDetails
                         {
-                            card = new CardDetails
-                            {
-                                CardType = model.CardType,
-                                CreditCardNumber = model.CreditCardNumber.EncryptString(_applicationSettings.Secret),
-                                cvv = model.cvv.EncryptString(_applicationSettings.Secret),
-                                Expiry = model.Expiry,
-                                MerchantId = model.MerchantId,
-                                Token = Utilities.GenerateToken(15)
-                            };
-                            unitOfWork.CarDetailsRepository.Insert(card);
-                            unitOfWork.Save();
-                        }
-
-                        var transaction = new Transactions
-                        {
-                            MerchantId = merchantInfo.Id,
-                            Amount = model.Amount,
-                            Currency = model.Currency,
-                            Code = $@"PG-{Utilities.GenerateToken(15)}",
-                            Status = eStatusTypes.Pending,
-                            CardId = card.Id
+                            CardType = model.CardType,
+                            CreditCardNumber = model.CreditCardNumber.EncryptString(_applicationSettings.Secret),
+                            cvv = model.cvv.EncryptString(_applicationSettings.Secret),
+                            Expiry = model.Expiry,
+                            MerchantId = model.MerchantId,
+                            Token = Utilities.GenerateToken(15)
                         };
-                        unitOfWork.TransactionRepository.Insert(transaction);
+                        unitOfWork.CarDetailsRepository.Insert(card);
                         unitOfWork.Save();
+                    }
 
-                        Program.log.Info($@"Saving Card Details");
+                    var transaction = new Transactions
+                    {
+                        MerchantId = merchantInfo.Id,
+                        Amount = model.Amount,
+                        Currency = model.Currency,
+                        Code = $@"PG-{Utilities.GenerateToken(15)}",
+                        Status = eStatusTypes.Pending,
+                        CardId = card.Id
+                    };
+                    unitOfWork.TransactionRepository.Insert(transaction);
+                    unitOfWork.Save();
 
-                        Program.log.Info($@"Contacting Mock Bank");
-                        var client = new RestClient($@"{ConfigurationManager.AppSetting["MockBankUri"]}");
-                        var bagg = new BankVerifcationBaggage
-                        {
-                            Amount = model.Amount,
-                            CardCVV = model.cvv,
-                            CardExpiry = model.Expiry,
-                            CardNumber = model.CreditCardNumber
-                        };
+                    Program.log.Info($@"Saving Card Details");
 
-                        var request = new RestRequest("api/BankVerify/Verify", DataFormat.Json);
-                        request.RequestFormat = DataFormat.Json;
-                        request.AddJsonBody(bagg);
-                        var response = client.Post(request);
-                        var bankVerificationResponse = JsonConvert.DeserializeObject<BankVerificationResponse>(response.Content);
-                        Program.log.Info($@"Mock Bank Response {JsonConvert.SerializeObject(bankVerificationResponse)}");
+                    Program.log.Info($@"Contacting Mock Bank");
+                    var client = new RestClient($@"{ConfigurationManager.AppSetting["MockBankUri"]}");
+                    var bagg = new BankVerifcationBaggage
+                    {
+                        Amount = model.Amount,
+                        CardCVV = model.cvv,
+                        CardExpiry = model.Expiry,
+                        CardNumber = model.CreditCardNumber
+                    };
 
-                        if (bankVerificationResponse.Status)
-                        {
-                            transaction.Status = eStatusTypes.Success;
-                            transaction.BankTransactionCode = bankVerificationResponse.TransactionCode;
-                            unitOfWork.TransactionRepository.Update(transaction);
-                            var resp = new { Message = "Transaction Completed Succesfully", TransanctionCode = transaction.Code, Status = true };
-                            Program.log.Info($@"Payment Gateway Response {JsonConvert.SerializeObject(resp)}");
-                            Program.log.Info($@"Profiler data {profiler.RenderPlainText()}");
-                            return Ok(resp);
-                        }
-                        else
-                        {
-                            transaction.Status = eStatusTypes.Failure;
-                            unitOfWork.TransactionRepository.Update(transaction);
-                            Program.log.Info($@"Profiler data {profiler.RenderPlainText()}");
-                            return BadRequest(new { message = bankVerificationResponse.Message, TransanctionCode = transaction.Code, Status = false });
-                        }
+                    var request = new RestRequest("api/BankVerify/Verify", DataFormat.Json);
+                    request.RequestFormat = DataFormat.Json;
+                    request.AddJsonBody(bagg);
+                    var response = client.Post(request);
+                    var bankVerificationResponse = JsonConvert.DeserializeObject<BankVerificationResponse>(response.Content);
+                    Program.log.Info($@"Mock Bank Response {JsonConvert.SerializeObject(bankVerificationResponse)}");
+
+                    if (bankVerificationResponse.Status)
+                    {
+                        transaction.Status = eStatusTypes.Success;
+                        transaction.BankTransactionCode = bankVerificationResponse.TransactionCode;
+                        unitOfWork.TransactionRepository.Update(transaction);
+                        var resp = new { Message = "Transaction Completed Succesfully", TransanctionCode = transaction.Code, Status = true };
+                        Program.log.Info($@"Payment Gateway Response {JsonConvert.SerializeObject(resp)}");
+                        Program.log.Info($@"Profiler data {profiler.RenderPlainText()}");
+                        return Ok(resp);
                     }
                     else
                     {
+                        transaction.Status = eStatusTypes.Failure;
+                        unitOfWork.TransactionRepository.Update(transaction);
                         Program.log.Info($@"Profiler data {profiler.RenderPlainText()}");
-                        return BadRequest(new { message = "Merchant Not Found" });
+                        return BadRequest(new { message = bankVerificationResponse.Message, TransanctionCode = transaction.Code, Status = false });
                     }
                 }
                 else
                 {
-                    paymentResult.Error = results.Errors.Select(e => e.ErrorMessage).ToList();
-                    paymentResult.Message = "Model Invalid";
-                    paymentResult.Status = SharedResource.eStatusTypes.Failure;
                     Program.log.Info($@"Profiler data {profiler.RenderPlainText()}");
-                    return BadRequest(JsonConvert.SerializeObject(paymentResult));
+                    return BadRequest(new { message = "Merchant Not Found" });
                 }
+            }
+            else
+            {
+                paymentResult.Error = results.Errors.Select(e => e.ErrorMessage).ToList();
+                paymentResult.Message = "Model Invalid";
+                paymentResult.Status = SharedResource.eStatusTypes.Failure;
+                Program.log.Info($@"Profiler data {profiler.RenderPlainText()}");
+                return BadRequest(JsonConvert.SerializeObject(paymentResult));
             }
         }
         /// <summary>

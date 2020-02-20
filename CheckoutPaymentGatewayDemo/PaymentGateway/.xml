@@ -25,6 +25,13 @@
             <param name="model"></param>
             <returns></returns>
         </member>
+        <member name="M:PaymentGateway.Controllers.ProcessorController.QueuedProcess(SharedResource.ViewModels.PaymentInfo)">
+            <summary>
+            Processes request in the queue and should post back response to provided endpoint
+            </summary>
+            <param name="model"></param>
+            <returns></returns>
+        </member>
         <member name="M:PaymentGateway.Controllers.ProcessorController.MerchantTransctions(System.Int32,System.Int32)">
             <summary>
             Get All Merchant Transactions
