@@ -73,6 +73,17 @@ namespace PaymentGatewayTest
             Assert.AreEqual(expiryWithoutSlah.year, 0);
         }
         [Test]
+        public void TestWhiteSpaceRemoval()
+        {
+            var testString = "4111 1111 1111 1111";
+            var textWithoutString = Utilities.RemoveWhitespaceAndNumber(testString);
+            Assert.AreEqual(textWithoutString, "4111111111111111");
+
+            var testAndNumberString = "4111 1111 1111 1111 ABC `";
+            var textWithoutStringOrNumbersString = Utilities.RemoveWhitespaceAndNumber(testAndNumberString);
+            Assert.AreEqual(textWithoutStringOrNumbersString, "4111111111111111");
+        }
+        [Test]
         public void RepositoryCountWorking()
         {          
             var options = new DbContextOptionsBuilder<PaymentGatewayDbContext.PaymentGatewayDbContext>()

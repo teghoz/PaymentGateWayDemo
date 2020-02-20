@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SharedResource.ViewModels;
-using PaymentGatewayRepository;
 using PaymentGateWayModels;
 using PaymentGateway.Model;
 using SharedResource.ViewModels.ViewModels;
@@ -24,7 +21,6 @@ using PaymentGateway.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using StackExchange.Profiling;
-using FluentValidation.Results;
 using Hangfire;
 
 namespace PaymentGateway.Controllers
@@ -37,7 +33,6 @@ namespace PaymentGateway.Controllers
         private UnitOfWork unitOfWork = new UnitOfWork();
         private readonly SignInManager<PaymentGatewayDbContext.ApplicationUser> _paymentGatewaySignInManager;
         private readonly UserManager<PaymentGatewayDbContext.ApplicationUser> _paymentGatewayUserManager;
-        private PaymentGatewayDbContext.PaymentGatewayDbContext _paymentGatewayDbContext;
         private RoleManager<IdentityRole> _roleManager;
         private readonly ApplicationSettings _applicationSettings;      
 
@@ -99,7 +94,7 @@ namespace PaymentGateway.Controllers
                             }
                             else
                             {
-                                var tokenString = await GetToken(currentMerchant);
+                                var tokenString = GetToken(currentMerchant);
 
                                 // return basic user info (without password) and token to store client side
                                 return Ok(new
@@ -128,7 +123,7 @@ namespace PaymentGateway.Controllers
             }
 
         }
-        private async Task<string> GetToken(ApplicationUser currentMerchant)
+        private string GetToken(ApplicationUser currentMerchant)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_applicationSettings.Secret);
@@ -203,8 +198,6 @@ namespace PaymentGateway.Controllers
             {
                 return BadRequest(JsonConvert.SerializeObject(results.Errors.Select(e => e.ErrorMessage).ToList()));
             }
-
-            return BadRequest(new { message = "Something Went Wrong" });
         }
         /// <summary>
         /// Process a mechant payment. Requires Authentication
@@ -213,7 +206,7 @@ namespace PaymentGateway.Controllers
         /// <returns></returns>
         // POST: api/Processor
         [HttpPost("Process")]
-        public async Task<IActionResult> Process([FromForm] PaymentInfo model)
+        public IActionResult Process([FromForm] PaymentInfo model)
         {
             Program.log.Info($@"Process endpoint invoked");
             Program.log.Info($@"Baggage {JsonConvert.SerializeObject(model)}");
@@ -324,7 +317,7 @@ namespace PaymentGateway.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Process/Queued")]
-        public async Task<string> QueuedProcess([FromForm] PaymentInfo model)
+        public string QueuedProcess([FromForm] PaymentInfo model)
         {
             Program.log.Info($@"Queued Process endpoint invoked");
             Program.log.Info($@"Baggage {JsonConvert.SerializeObject(model)}");
@@ -349,7 +342,7 @@ namespace PaymentGateway.Controllers
         /// <param name="length"></param>
         /// <returns></returns>
         [HttpPost("Merchant/Transactions")]
-        public async Task<IActionResult> MerchantTransctions(int start, int length)
+        public IActionResult MerchantTransctions(int start, int length)
         {
             try
             {
@@ -382,7 +375,7 @@ namespace PaymentGateway.Controllers
         /// <param name="reference"></param>
         /// <returns></returns>
         [HttpGet("Merchant/Transaction")]
-        public async Task<IActionResult> MerchantTransction(string reference)
+        public IActionResult MerchantTransction(string reference)
         {
             try
             {
@@ -407,7 +400,7 @@ namespace PaymentGateway.Controllers
         }
         [AllowAnonymous]
         [HttpPost("Merchant/TestReciever")]
-        public async Task TestReciever(object payload)
+        public void TestReciever(object payload)
         {
             Program.log.Info($@"Queued Reciever invoked endpoint invoked {JsonConvert.SerializeObject(payload)}");
         }

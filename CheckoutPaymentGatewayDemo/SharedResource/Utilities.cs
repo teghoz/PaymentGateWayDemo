@@ -103,5 +103,13 @@ namespace SharedResource
             }
             return (0, 0);
         }
+        public static string RemoveWhitespaceAndNumber(this string input)
+        {
+            return new string(input.ToCharArray()
+                .Where(c => !Char.IsWhiteSpace(c))
+                .Where(c => char.IsNumber(c))
+                .Where(c => !char.IsSymbol(c))
+                .ToArray());
+        }
     }
 }
