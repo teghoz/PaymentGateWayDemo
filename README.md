@@ -1,5 +1,5 @@
 # PaymentGateWayDemo
-A Demo to showcase Payment Gate Way
+A Demo to showcase Payment Gateway
 
 ## Assumptions
 * Password used across ``` ch@ck0utA ```
@@ -22,13 +22,31 @@ new BankAccountCards{ CardNumber = "4111 1111 1111 1123", Email = "", Expiry= "7
 new BankAccountCards{ CardNumber = "4111 1111 1111 1124", Email = "", Expiry= "11/19", Balance = 1000.35M }
 ```
 
+* MockAcquiringBank Endpoint
+```bash
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "MockBankUri": "https://localhost:44308/",
+    ...
+}
+```
+
+**Please SPECIFY ENDPOINT TO MOCK Bank Url in ** [appsettings.json](/CheckoutPaymentGatewayDemo/PaymentGateway/appsettings.json).
+
 ## Usage
 
 * A merchant has to be created/registered using the endpoint ``` /PaymentGateway/Merchant/Registration ```
 * The registered merchant would have to be authenticated using the endpoint ``` /PaymentGateway/Merchant/MerchantLogin ```. A token would be returned which the merchant would use to access resources.
 * The registered merchant can use either the "synchronous" endpoint of ``` /PaymentGateway/Merchant/Process ``` to process a transaction or ``` /PaymentGateway/Merchant/Process/Queued ``` which kind of simulates a webhook. It returns the response to the provided return url.
 
-* All Endpoint are listing in each projects swagger page
+* All Endpoint are listed in each project's swagger page
 ![picture alt](ReadMeAssets/PaymentGateway.png "Mock Bank Swagger")
 ![picture alt](ReadMeAssets/MockBank.png "Mock Bank Swagger")
 
@@ -40,6 +58,14 @@ dotnet build
 * test
 ```bash
 dotnet test 
+```
+* run Mock Acquiring Bank
+```bash
+dotnet run --project MockAcquiringBank --server.urls [https://localhost:2445 | [https://0.0.0.0:2445]
+```
+* run PaymentGateway
+```bash
+dotnet run --project PaymentGateway --server.urls [https://localhost:2345 | [https://0.0.0.0:2345]
 ```
 * add migration 
 ```bash
