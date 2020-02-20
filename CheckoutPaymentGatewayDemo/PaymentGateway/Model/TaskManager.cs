@@ -120,7 +120,7 @@ namespace PaymentGateway.Model
             request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(payload);
             var response = client.Post(request);
-            context.WriteLine($@"webhook reference: {JsonConvert.SerializeObject(response)}");
+            context.WriteLine($@"webhook reference: {JsonConvert.SerializeObject(response.Content)}");
         }
     }
 }

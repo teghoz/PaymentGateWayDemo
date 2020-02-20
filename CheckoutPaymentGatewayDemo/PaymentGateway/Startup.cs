@@ -130,9 +130,8 @@ namespace PaymentGateway
             });
 
             services.AddLogging();
-            services.AddHangfire(config => config.UseSqlServerStorage(ConnectionManager.Connection["ConnectionString: PaymentGateway"]));
             services.AddHangfire(config => {
-                config.UseSqlServerStorage(ConnectionManager.Connection["ConnectionString"]);
+                config.UseSqlServerStorage(ConnectionManager.Connection["ConnectionString:PaymentGateway"]);
                 config.UseConsole();
             });
         }
