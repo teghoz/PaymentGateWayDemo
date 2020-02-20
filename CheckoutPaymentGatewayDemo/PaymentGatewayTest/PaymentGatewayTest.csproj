@@ -27,21 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Features\Repository.feature.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Repository.feature</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <SpecFlowFeatureFiles Update="Features\MerchantValidPostRequest.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-    </SpecFlowFeatureFiles>
-    <SpecFlowFeatureFiles Update="Features\Repository.feature">
-      <Generator>SpecFlowSingleFileGenerator</Generator>
-      <LastGenOutput>Repository.feature.cs</LastGenOutput>
-    </SpecFlowFeatureFiles>
+    <Folder Include="Features\" />
+    <Folder Include="Steps\" />
   </ItemGroup>
 
 </Project>
