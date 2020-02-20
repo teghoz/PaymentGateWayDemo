@@ -38,7 +38,7 @@ new BankAccountCards{ CardNumber = "4111 1111 1111 1124", Email = "", Expiry= "1
 }
 ```
 
-**Please SPECIFY ENDPOINT TO MOCK Bank Url in ** [appsettings.json](/CheckoutPaymentGatewayDemo/PaymentGateway/appsettings.json).
+**Please SPECIFY ENDPOINT TO MOCK Bank Url in** [appsettings.json](/CheckoutPaymentGatewayDemo/PaymentGateway/appsettings.json).
 
 ## Usage
 
@@ -49,6 +49,13 @@ new BankAccountCards{ CardNumber = "4111 1111 1111 1124", Email = "", Expiry= "1
 * All Endpoint are listed in each project's swagger page
 ![picture alt](ReadMeAssets/PaymentGateway.png "Mock Bank Swagger")
 ![picture alt](ReadMeAssets/MockBank.png "Mock Bank Swagger")
+
+### Logs
+* Logs can be found in the route directory [/Logs/](/CheckoutPaymentGatewayDemo/PaymentGateway/Logs/)
+
+### CRON Job Manager
+* Hangfire dashboard can be seen on Payment Gateway ``` /hangfire ```
+
 
 ## Commands
 * build
