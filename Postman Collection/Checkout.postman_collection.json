@@ -1,0 +1,486 @@
+{
+	"info": {
+		"_postman_id": "a1eaf5ae-5596-42cb-8e24-cd4b1da30120",
+		"name": "Checkout",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "https://localhost:44364/api/Processor/Process/Queued",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFnaG9naG9tZXJjaGFudEBub21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6IkFnaG9naG8gTWVyY2hhbnQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9hdXRoZW50aWNhdGlvbiI6ImJlNTk4Zjk1LTE5MjQtNDYwYS1hMDUyLTM2MDIwMTQ2ODI1NCIsInJvbGUiOiJNZXJjaGFudCIsInVuaXF1ZV9uYW1lIjoiMiIsIm5iZiI6MTU4MjA2OTg0MywiZXhwIjoxNTgyNjc0NjQyLCJpYXQiOjE1ODIwNjk4NDIsImlzcyI6IkNIRUNLT1VUIn0.zsRUi1yBjJ3LXuC37Cqm7C4F1mQ-MjiR4cTnpjsA6ek",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "PaymentId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "MerchantId",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "CustomerId",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "Email",
+							"value": "aghoghobernard@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "cvv",
+							"value": "321",
+							"type": "text"
+						},
+						{
+							"key": "CreditCardNumber",
+							"value": "4111 1111 1111 1111",
+							"type": "text"
+						},
+						{
+							"key": "Expiry",
+							"value": "10/25",
+							"type": "text"
+						},
+						{
+							"key": "CardType",
+							"value": "Visa",
+							"type": "text"
+						},
+						{
+							"key": "Amount",
+							"value": "1000",
+							"type": "text"
+						},
+						{
+							"key": "RedirectUrl",
+							"value": "https://localhost:44364/api/Processor/Merchant/TestReciever",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://localhost:44364/api/Processor/Process/Queued",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44364",
+					"path": [
+						"api",
+						"Processor",
+						"Process",
+						"Queued"
+					]
+				},
+				"description": "Process a transaction using queue"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:44364/api/Processor/Merchant/Registration",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "FirstName",
+							"value": "Aghogho",
+							"type": "text"
+						},
+						{
+							"key": "LastName",
+							"value": "Merchant",
+							"type": "text"
+						},
+						{
+							"key": "Email",
+							"value": "aghoghomerchant@nomail.com",
+							"type": "text"
+						},
+						{
+							"key": "Email",
+							"value": "aghogho",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "cvv",
+							"value": "321",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "CreditCardNumber",
+							"value": "123456789123456789",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Expiry",
+							"value": "`10/25",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "CardType",
+							"value": "Visa",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Amount",
+							"value": "1000",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "https://localhost:44364/api/Processor/Merchant/Registration",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44364",
+					"path": [
+						"api",
+						"Processor",
+						"Merchant",
+						"Registration"
+					]
+				},
+				"description": "Register a merchant"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:44364/api/Processor/Login?userName=aghoghomerchant@nomail.com&passWord=ch@ck0utA",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userName",
+							"value": "aghoghomerchant@nomail.com",
+							"type": "text"
+						},
+						{
+							"key": "Password",
+							"value": "ch@ck0utA",
+							"type": "text"
+						},
+						{
+							"key": "Email",
+							"value": "aghoghomerchant@nomail.com",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Email",
+							"value": "aghogho",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "cvv",
+							"value": "321",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "CreditCardNumber",
+							"value": "123456789123456789",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Expiry",
+							"value": "`10/25",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "CardType",
+							"value": "Visa",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Amount",
+							"value": "1000",
+							"type": "text",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "https://localhost:44364/api/Processor/Login?userName=aghoghomerchant@nomail.com&passWord=ch@ck0utA",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44364",
+					"path": [
+						"api",
+						"Processor",
+						"Login"
+					],
+					"query": [
+						{
+							"key": "userName",
+							"value": "aghoghomerchant@nomail.com"
+						},
+						{
+							"key": "passWord",
+							"value": "ch@ck0utA"
+						}
+					]
+				},
+				"description": "Merchant Login"
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:44364/api/Processor/Merchant/Transaction?reference=PG-21JvxzFmvo9Qd9J",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFnaG9naG9tZXJjaGFudEBub21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6IkFnaG9naG8gTWVyY2hhbnQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9hdXRoZW50aWNhdGlvbiI6ImJlNTk4Zjk1LTE5MjQtNDYwYS1hMDUyLTM2MDIwMTQ2ODI1NCIsInJvbGUiOiJNZXJjaGFudCIsInVuaXF1ZV9uYW1lIjoiMiIsIm5iZiI6MTU4MjA2OTg0MywiZXhwIjoxNTgyNjc0NjQyLCJpYXQiOjE1ODIwNjk4NDIsImlzcyI6IkNIRUNLT1VUIn0.zsRUi1yBjJ3LXuC37Cqm7C4F1mQ-MjiR4cTnpjsA6ek",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "PaymentId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "MerchantId",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "CustomerId",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "Email",
+							"value": "aghoghobernard@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "cvv",
+							"value": "321",
+							"type": "text"
+						},
+						{
+							"key": "CreditCardNumber",
+							"value": "4111 1111 1111 1111",
+							"type": "text"
+						},
+						{
+							"key": "Expiry",
+							"value": "10/25",
+							"type": "text"
+						},
+						{
+							"key": "CardType",
+							"value": "Visa",
+							"type": "text"
+						},
+						{
+							"key": "Amount",
+							"value": "1000",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://localhost:44364/api/Processor/Merchant/Transaction?reference=PG-21JvxzFmvo9Qd9J",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44364",
+					"path": [
+						"api",
+						"Processor",
+						"Merchant",
+						"Transaction"
+					],
+					"query": [
+						{
+							"key": "reference",
+							"value": "PG-21JvxzFmvo9Qd9J"
+						}
+					]
+				},
+				"description": "Send merchant transaction detail "
+			},
+			"response": []
+		},
+		{
+			"name": "https://localhost:44364/api/Processor/Merchant/Transaction?reference=PG-21JvxzFmvo9Qd9J",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFnaG9naG9tZXJjaGFudEBub21haWwuY29tIiwiZ2l2ZW5fbmFtZSI6IkFnaG9naG8gTWVyY2hhbnQiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9hdXRoZW50aWNhdGlvbiI6ImJlNTk4Zjk1LTE5MjQtNDYwYS1hMDUyLTM2MDIwMTQ2ODI1NCIsInJvbGUiOiJNZXJjaGFudCIsInVuaXF1ZV9uYW1lIjoiMiIsIm5iZiI6MTU4MjA2OTg0MywiZXhwIjoxNTgyNjc0NjQyLCJpYXQiOjE1ODIwNjk4NDIsImlzcyI6IkNIRUNLT1VUIn0.zsRUi1yBjJ3LXuC37Cqm7C4F1mQ-MjiR4cTnpjsA6ek",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "PaymentId",
+							"value": "1",
+							"type": "text"
+						},
+						{
+							"key": "MerchantId",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "CustomerId",
+							"value": "3",
+							"type": "text"
+						},
+						{
+							"key": "Email",
+							"value": "aghoghobernard@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "cvv",
+							"value": "321",
+							"type": "text"
+						},
+						{
+							"key": "CreditCardNumber",
+							"value": "4111 1111 1111 1111",
+							"type": "text"
+						},
+						{
+							"key": "Expiry",
+							"value": "10/25",
+							"type": "text"
+						},
+						{
+							"key": "CardType",
+							"value": "Visa",
+							"type": "text"
+						},
+						{
+							"key": "Amount",
+							"value": "1000",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://localhost:44364/api/Processor/Merchant/Transactions?start=0&length=10",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "44364",
+					"path": [
+						"api",
+						"Processor",
+						"Merchant",
+						"Transactions"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "0"
+						},
+						{
+							"key": "length",
+							"value": "10"
+						}
+					]
+				},
+				"description": "List all transactions for a merchant"
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
