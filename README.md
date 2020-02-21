@@ -1,5 +1,5 @@
 # PaymentGateWayDemo
-A Demo to showcase Payment Gateway
+A Demo to showcase a Payment Gateway POC
 
 ## Assumptions
 * Password used across ``` ch@ck0utA ```
@@ -40,11 +40,14 @@ new BankAccountCards{ CardNumber = "4111 1111 1111 1124", Email = "", Expiry= "1
 
 **Please SPECIFY ENDPOINT TO MOCK Bank Url in** [appsettings.json](/CheckoutPaymentGatewayDemo/PaymentGateway/appsettings.json).
 
+## Postman Collection
+**Please download and import the collection to postman** [Checkout.postman_collection.json](/PostmanCollection/Checkout.postman_collection.json).
+
 ## Usage
 
 * A merchant has to be created/registered using the endpoint ``` /PaymentGateway/Merchant/Registration ```
 * The registered merchant would have to be authenticated using the endpoint ``` /PaymentGateway/Merchant/MerchantLogin ```. A token would be returned which the merchant would use to access resources.
-* The registered merchant can use either the "synchronous" endpoint of ``` /PaymentGateway/Merchant/Process ``` to process a transaction or ``` /PaymentGateway/Merchant/Process/Queued ``` which kind of simulates a webhook. It returns the response to the provided return url.
+* The registered merchant can use either the "synchronous" endpoint of ``` /PaymentGateway/Merchant/Process ``` to process a transaction or ``` /PaymentGateway/Merchant/Process/Queued ``` which kindS of simulates a webhook. It returns the response to the provided return url.
 
 * All Endpoint are listed in each project's swagger page
 ![picture alt](ReadMeAssets/PaymentGateway.png "Mock Bank Swagger")
@@ -59,8 +62,9 @@ new BankAccountCards{ CardNumber = "4111 1111 1111 1124", Email = "", Expiry= "1
 ![picture alt](ReadMeAssets/HangfireQueue.png "Hangfire Queue")
 ![picture alt](ReadMeAssets/HangfireQueue1.png "Hangfire Queue1")
 
-#### Postman Collection
-**Please download and import the collection to postman** [Checkout.postman_collection.json](/Postman Collection/Checkout.postman_collection.json).
+## Directory Structure
+![picture alt](ReadMeAssets/FolderStructure.png "Directory Structure")
+![picture alt](ReadMeAssets/FolderStructureExpanded.png "Directory Folder Expanded")
 
 
 ## Commands
@@ -88,6 +92,29 @@ dotnet ef migrations add [YourDescription] -c PaymentGatewayDbContext.PaymentGat
 ```bash
 dotnet ef database update --project PaymentGatewayDbContext 
 ```
+
+* docker build
+```bash
+cd PaymentGateway
+docker build -t [your_tag] -f Dockerfile .
+```
+* docker image list
+```bash
+cd PaymentGateway
+docker images
+```
+* docker container creation
+```bash
+cd PaymentGateway
+docker create [your_image_name]
+```
+
+* docker start/stop
+```bash
+cd PaymentGateway
+docker [start | stop] [your_image_name]
+```
+
 
 ## Improvements
 **WebHooks.**
