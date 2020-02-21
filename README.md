@@ -59,8 +59,12 @@ new BankAccountCards{ CardNumber = "4111 1111 1111 1124", Email = "", Expiry= "1
 ![picture alt](ReadMeAssets/HangfireQueue.png "Hangfire Queue")
 ![picture alt](ReadMeAssets/HangfireQueue1.png "Hangfire Queue1")
 
-#### Postman Collection
-**Please download and import the collection to postman** [Checkout.postman_collection.json](/Postman Collection/Checkout.postman_collection.json).
+### Postman Collection
+**Please download and import the collection to postman** [Checkout.postman_collection.json](/PostmanCollection/Checkout.postman_collection.json).
+
+## Directory Structure
+![picture alt](ReadMeAssets/FolderStructure.png "Directory Structure")
+![picture alt](ReadMeAssets/FolderStructureExpanded.png "Directory Folder Expanded")
 
 
 ## Commands
@@ -87,6 +91,17 @@ dotnet ef migrations add [YourDescription] -c PaymentGatewayDbContext.PaymentGat
 * update database 
 ```bash
 dotnet ef database update --project PaymentGatewayDbContext 
+```
+
+* docker build
+```bash
+cd PaymentGateway
+docker build -t [your_tag] -f Dockerfile .
+```
+* docker container creation
+```bash
+cd PaymentGateway
+docker create [your_image_name]
 ```
 
 ## Improvements
