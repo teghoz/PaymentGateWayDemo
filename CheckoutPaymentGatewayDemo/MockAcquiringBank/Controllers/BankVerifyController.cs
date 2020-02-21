@@ -19,7 +19,7 @@ namespace MockAcquiringBank.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost("Verify")]
-        public async Task<IActionResult> VerifyCardOayment([FromBody] BankVerifcationBaggage model)
+        public IActionResult VerifyCardPayment([FromBody] BankVerifcationBaggage model)
         {
             //check if the card exist
             BankRepository bankRepository = new BankRepository();
@@ -40,7 +40,11 @@ namespace MockAcquiringBank.Controllers
                                 Status = true,
                                 TransactionCode = Utilities.GenerateToken(15),
                                 Message = "Success"
-                            }); ;
+                            });
+                        }
+                        else
+                        {
+                            return BadRequest(new BankVerificationResponse { Status = false, Message = "Insufficient Balance" });
                         }
                     }
                     else

@@ -54,7 +54,13 @@ new BankAccountCards{ CardNumber = "4111 1111 1111 1124", Email = "", Expiry= "1
 * Logs can be found in the route directory [/Logs/](/CheckoutPaymentGatewayDemo/PaymentGateway/Logs/)
 
 ### CRON Job Manager
-* Hangfire dashboard can be seen on Payment Gateway ``` /hangfire ```
+* Hangfire dashboard can be seen on Payment Gateway ``` /hangfire ```. If the ``` /PaymentGateway/Merchant/Process/Queued ``` endpoint is used, then it would queued up in hangfire. Log Details of each task can be seen in the Hangfire console.
+
+![picture alt](ReadMeAssets/HangfireQueue.png "Hangfire Queue")
+![picture alt](ReadMeAssets/HangfireQueue1.png "Hangfire Queue1")
+
+#### Postman Collection
+**Please download and import the collection to postman** [Checkout.postman_collection.json](/Postman Collection/Checkout.postman_collection.json).
 
 
 ## Commands
