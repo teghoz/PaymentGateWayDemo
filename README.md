@@ -133,6 +133,7 @@ Use of ASP.Net  Webhooks. Would be a more robust option in production instead of
 * Log4Net.
 * RestSharp.
 * NUnit.
+* RijndaelManaged Encryption
 * Swagger API.
 * StackExchange.Profiling
 * JwtBearer Token Authentication
